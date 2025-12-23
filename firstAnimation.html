@@ -1,0 +1,83 @@
+<!doctype html>
+
+<body>
+<p id="p"></p>
+<canvas id="canvas"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const p = document.getElementById('p');
+    var canvasWidth = window.innerWidth;
+    var canvasHeight = window.innerHeight;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    canvas.style.background = 'pink';
+    let xMouse;
+    let yMouse;
+    canvas.addEventListener('mousemove', function(info) {
+        xMouse = info.offsetX;
+        yMouse = info.offsetY;
+    })
+
+    let xPos1 = 0, xPos2 = 0, yPos1 = 0, yPos2 = 0;
+
+    class tCircle {
+        constructor(xPos, yPos, rad, speed) {
+            this.xPos = xPos;
+            this.yPos = yPos;
+            this.rad = rad;
+            this.speed = speed;
+
+            this.color = 'maroon';
+            this.xSpeed = this.speed;
+            this.ySpeed = this.speed;
+        }
+        mCircle() {
+        ctx.beginPath();
+        ctx.arc(this.xPos, this.yPos, this.rad, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+        }
+        changePos() {
+            this.xPos = Math.random() * canvasWidth;
+            this.yPos = Math.random() * canvasHeight;
+        }
+        move() {
+            if(this.xPos + this.rad > canvasWidth || this.xPos - this.rad < 0) {
+                this.xSpeed = -this.xSpeed;
+            }
+            if(this.yPos + this.rad > canvasHeight || this.yPos - this.rad < 0) {
+                this.ySpeed = -this.ySpeed;
+            }
+            this.xPos += this.xSpeed;
+            this.yPos += this.ySpeed;
+        }
+    }
+    let xRandom = Math.random() * canvasWidth;
+    let yRandom = Math.random() * canvasHeight;
+    const oneCircle = new tCircle(xRandom, yRandom, 50, 3);
+
+    function distance(xPos1, xPos2, yPos1, yPos2, rad2) {
+        let measure = Math.sqrt(Math.pow(Math.abs(xPos2-xPos1), 2) + Math.pow(Math.abs(yPos2-yPos1),2)) - rad2;
+        return measure;
+    }
+    
+    animate();
+
+    function animate() {
+        oneCircle.mCircle();
+        p.textContent = 'Succeed';
+        console.log(distance(xMouse, oneCircle.xPos, yMouse, oneCircle.yPos, oneCircle.rad));
+        if(distance(xMouse, oneCircle.xPos, yMouse, oneCircle.yPos, oneCircle.rad) < 0) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            oneCircle.changePos();
+        }
+        requestAnimationFrame(animate);
+    }
+
+</script>
+
+</body>
+
+</html>
